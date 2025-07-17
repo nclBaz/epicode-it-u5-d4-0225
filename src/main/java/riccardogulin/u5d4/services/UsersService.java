@@ -28,6 +28,7 @@ public class UsersService {
 
 		// 1. Controllo che l'email fornita non sia già usata da qualcuno
 		// TODO: effettua controllo email
+		if (usersRepository.existsByEmail(newUser.getEmail())) throw new ValidationException("Email " + newUser.getEmail() + " già in uso");
 
 		// 2. Effettuo ulteriori controlli di validazione dei campi forniti
 		if (newUser.getName().length() < 2) throw new ValidationException("Il nome non può essere più corto di 2 caratteri!");
@@ -86,5 +87,21 @@ public class UsersService {
 				log.error(ex.getMessage());
 			}
 		}
+	}
+
+	public List<User> filterBySurname(String surname) {
+		return this.usersRepository.findBySurname(surname);
+	}
+
+	public List<User> filterByNameAndSurname(String name, String surname) {
+		return this.usersRepository.findByNameAndSurname(name, surname);
+	}
+
+	public List<User> filterByNameStartsWith(String partialName) {
+		return this.usersRepository.findByNameStartingWithIgnoreCase(partialName);
+	}
+
+	public List<User> filterByNamesList(List<String> names) {
+		return this.usersRepository.findByNameIn(names);
 	}
 }

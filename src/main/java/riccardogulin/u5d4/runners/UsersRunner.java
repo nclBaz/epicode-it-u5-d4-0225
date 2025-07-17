@@ -33,8 +33,8 @@ public class UsersRunner implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		Faker faker = new Faker(Locale.ITALY);
 
-
-		// usersService.saveUser(newUser);
+		User newUser = new User(faker.lordOfTheRings().character(), faker.name().lastName(), "ajeje@gmail.com", faker.random().nextInt(100));
+		usersService.saveUser(newUser);
 
 		usersService.findAll().forEach(System.out::println);
 
@@ -45,8 +45,8 @@ public class UsersRunner implements CommandLineRunner {
 
 		List<User> newUsers = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
-			User newUser = new User(faker.lordOfTheRings().character(), faker.name().lastName(), faker.internet().emailAddress(), faker.random().nextInt(100));
-			newUsers.add(newUser);
+			User newUser2 = new User(faker.lordOfTheRings().character(), faker.name().lastName(), faker.internet().emailAddress(), faker.random().nextInt(100));
+			newUsers.add(newUser2);
 		}
 
 		// usersService.saveMany(newUsers);
@@ -57,11 +57,22 @@ public class UsersRunner implements CommandLineRunner {
 		}
 
 		try {
-			blogsService.saveNewBlog("Spring", "Ha i Beans", 1);
+			// blogsService.saveNewBlog("Spring", "Ha i Beans", 1);
 		} catch (NotFoundException ex) {
 			log.error(ex.getMessage());
 		}
 
+		System.out.println(" FIND BY SURNAME ");
+		usersService.filterBySurname("Brazorf").forEach(System.out::println);
 
+		System.out.println(" FIND BY NAME AND SURNAME ");
+		usersService.filterByNameAndSurname("Sauron", "Brazorf").forEach(System.out::println);
+
+		System.out.println(" FIND BY PARTIAL NAME ");
+		usersService.filterByNameStartsWith("a").forEach(System.out::println);
+
+		System.out.println(" FIND BY LIST OF NAMES ");
+		List<String> names = new ArrayList<>(List.of("Ajeje", "Sauron", "Aragorn"));
+		usersService.filterByNamesList(names).forEach(System.out::println);
 	}
 }
