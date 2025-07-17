@@ -1,0 +1,55 @@
+package riccardogulin.u5d4.runners;
+
+import com.github.javafaker.Faker;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import riccardogulin.u5d4.entities.User;
+import riccardogulin.u5d4.exceptions.NotFoundException;
+import riccardogulin.u5d4.services.UsersService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+@Component
+@Slf4j
+public class UsersRunner implements CommandLineRunner {
+	/*
+	@Autowired
+	private UsersRepository usersRepository;
+	MAI UTILIZZARE DIRETTAMENTE LE REPOSITORIES!
+	Devo invece utilizzare i SERVICE che effettuano dei controlli prima di salvare ad es.
+*/
+	@Autowired
+	private UsersService usersService;
+
+	@Override
+	public void run(String... args) throws Exception {
+		Faker faker = new Faker(Locale.ITALY);
+
+
+		// usersService.saveUser(newUser);
+
+		usersService.findAll().forEach(System.out::println);
+
+		try {
+			System.out.println(usersService.findById(11));
+		} catch (NotFoundException ex) {
+			log.error(ex.getMessage());
+		}
+
+		// usersService.findByIdAndDelete(3);
+
+		usersService.findByIdAndUpdate(1, new User("Ajeje", "Brazorf", "ajeje@gmail.com", 20));
+
+		List<User> newUsers = new ArrayList<>();
+		for (int i = 0; i < 50; i++) {
+			User newUser = new User(faker.lordOfTheRings().character(), faker.name().lastName(), faker.internet().emailAddress(), faker.random().nextInt(100));
+			newUsers.add(newUser);
+		}
+
+		usersService.saveMany(newUsers);
+	}
+}
