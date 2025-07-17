@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import riccardogulin.u5d4.entities.User;
 import riccardogulin.u5d4.exceptions.NotFoundException;
+import riccardogulin.u5d4.services.BlogsService;
 import riccardogulin.u5d4.services.UsersService;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class UsersRunner implements CommandLineRunner {
 	@Autowired
 	private UsersService usersService;
 
+	@Autowired
+	private BlogsService blogsService;
+
 	@Override
 	public void run(String... args) throws Exception {
 		Faker faker = new Faker(Locale.ITALY);
@@ -34,11 +38,6 @@ public class UsersRunner implements CommandLineRunner {
 
 		usersService.findAll().forEach(System.out::println);
 
-		try {
-			System.out.println(usersService.findById(11));
-		} catch (NotFoundException ex) {
-			log.error(ex.getMessage());
-		}
 
 		// usersService.findByIdAndDelete(3);
 
@@ -50,6 +49,19 @@ public class UsersRunner implements CommandLineRunner {
 			newUsers.add(newUser);
 		}
 
-		usersService.saveMany(newUsers);
+		// usersService.saveMany(newUsers);
+		try {
+			System.out.println(usersService.findById(11));
+		} catch (NotFoundException ex) {
+			log.error(ex.getMessage());
+		}
+
+		try {
+			blogsService.saveNewBlog("Spring", "Ha i Beans", 1);
+		} catch (NotFoundException ex) {
+			log.error(ex.getMessage());
+		}
+
+
 	}
 }
